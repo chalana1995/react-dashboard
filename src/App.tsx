@@ -44,8 +44,6 @@ function App() {
               }}
             >
               <Routes>
-                <Route index element={<WelcomePage />} />
-                <Route index element={<Home />} />
                 <Route path="/register" index element={<Register />} />
                 <Route path="/login" index element={<Login />} />
                 <Route
@@ -58,12 +56,14 @@ function App() {
                     <Authenticated
                       key="authenticated-layout"
                       fallback={<CatchAllNavigate to="/login" />}
-                    />
+                    >
+                      <Layout>
+                        <Outlet />
+                      </Layout>
+                    </Authenticated>
                   }
                 >
-                  <Layout>
-                    <Outlet />
-                  </Layout>
+                  <Route index element={<Home />} />
                 </Route>
               </Routes>
               <RefineKbar />
