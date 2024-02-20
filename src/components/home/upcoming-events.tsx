@@ -3,10 +3,19 @@ import { Badge, Card, List } from "antd";
 import React, { useState } from "react";
 import { Text } from "../text";
 import UpcomingEventsSkeleton from "../skeleton/upcoming-events";
+import { useList } from "@refinedev/core";
+import { DASHBORAD_CALENDAR_UPCOMING_EVENTS_QUERY } from "@/graphql/queries";
+import { getDate } from "@/utilities/helpers";
 
 const UpcomingEvents = () => {
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [isLoading, setIsLoading] = useState(false)
+  const { data, isLoading: eventLoading } = useList({
+    resource: "events",
+    meta: {
+      gqlQuery: DASHBORAD_CALENDAR_UPCOMING_EVENTS_QUERY,
+    },
+  });
 
   return (
     <Card
@@ -37,22 +46,26 @@ const UpcomingEvents = () => {
           renderItem={() => <UpcomingEventsSkeleton />}
         />
       ) : (
-        <List itemLayout="horizontal"
-        dataSource={[]}
-        renderItem={(item) => {
+        <List
+          itemLayout="horizontal"
+          dataSource={data?.data || []}
+          renderItem={(item) => {
+            const renderDate = getDate(item.startDate, item.endDate);
 
-          const renderDate = getDate(item.startDate, item.endDate)
-
-          return (
-            <List.Item>
-              <List.Item.Meta
-                avatar={<Badge color={item.color} />}
-                title={<Text size="xs">{renderDate}</Text>}
-                description={<Text ellipsis={{tooltip: true}} strong>{item.title}</Text>}
-              />
-            </List.Item>
-          );
-        }}
+            return (
+              <List.Item>
+                <List.Item.Meta
+                  avatar={<Badge color={item.color} />}
+                  title={<Text size="xs">{renderDate}</Text>}
+                  description={
+                    <Text ellipsis={{ tooltip: true }} strong>
+                      {item.title}
+                    </Text>
+                  }
+                />
+              </List.Item>
+            );
+          }}
         ></List>
       )}
     </Card>
