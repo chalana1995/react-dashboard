@@ -81,7 +81,7 @@ const UpcomingEvents = () => {
               </List.Item>
             );
           }}
-        ></List>
+        />
       )}
 
       {!isLoading && data?.data.length === 0 && (
